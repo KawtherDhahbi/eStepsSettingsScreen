@@ -1,49 +1,43 @@
 "use client"
 
 import { useState } from "react"
-import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity, Switch } from "react-native"
+import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity, Switch, ImageStyle } from "react-native"
 import Icon from "react-native-vector-icons/Ionicons"
-import { COLORS } from "../constants/theme"
+import { COLORS, FONTS, SPACING } from "../constants/theme"
+import type { ProfileStackNavigationProp } from "../types/navigation"
 
-const AccountScreen = () => {
-  const [leaderboardEnabled, setLeaderboardEnabled] = useState(false)
+interface AccountScreenProps {
+  navigation: ProfileStackNavigationProp
+}
+
+interface MenuItemProps {
+  icon: string
+  title: string
+  onPress: () => void
+  color?: string
+  danger?: boolean
+}
+
+const MenuItem = ({ icon, title, onPress, color = COLORS.primary, danger = false }: MenuItemProps) => (
+  <TouchableOpacity style={[styles.menuItem, danger && styles.dangerMenuItem]} onPress={onPress}>
+    <View style={styles.menuItemLeft}>
+      {danger ? (
+        <View style={styles.dangerIconContainer}>
+          <Icon name={icon} size={20} color={COLORS.error} />
+        </View>
+      ) : (
+        <Icon name={icon} size={24} color={color} />
+      )}
+      <Text style={[styles.menuItemText, danger ? styles.dangerText : { color: COLORS.text }]}>{title}</Text>
+    </View>
+    {!danger && <Icon name="chevron-forward" size={20} color={COLORS.gray} />}
+  </TouchableOpacity>
+)
+
+const AccountScreen = ({ navigation }: AccountScreenProps) => {
+  const [notificationsEnabled, setNotificationsEnabled] = useState(false)
   const [newsletterEnabled, setNewsletterEnabled] = useState(false)
   const [showLeaderboard, setShowLeaderboard] = useState(false)
-
-  interface MenuItemProps {
-    icon: string;
-    title: string;
-    onPress: () => void;
-    color?: string;
-    danger?: boolean;
-  }
-
-  const MenuItem = ({ icon, title, onPress, color = COLORS.primary, danger = false }: MenuItemProps) => (
-    <TouchableOpacity 
-      style={[
-        styles.menuItem, 
-        danger && styles.dangerMenuItem
-      ]} 
-      onPress={onPress}
-    >
-      <View style={styles.menuItemLeft}>
-        {danger ? (
-          <View style={styles.dangerIconContainer}>
-            <Icon name={icon} size={20} color="#FF3B30" />
-          </View>
-        ) : (
-          <Icon name={icon} size={24} color={color} />
-        )}
-        <Text style={[
-          styles.menuItemText, 
-          danger ? styles.dangerText : { color: color === "red" ? color : COLORS.text }
-        ]}>
-          {title}
-        </Text>
-      </View>
-      {!danger && <Icon name="chevron-forward" size={24} color={COLORS.gray} />}
-    </TouchableOpacity>
-  )
 
   return (
     <ScrollView style={styles.container}>
@@ -71,9 +65,10 @@ const AccountScreen = () => {
             <Text style={styles.menuItemText}>Notifications</Text>
           </View>
           <Switch
-            value={leaderboardEnabled}
-            onValueChange={setLeaderboardEnabled}
+            value={notificationsEnabled}
+            onValueChange={setNotificationsEnabled}
             trackColor={{ false: COLORS.border, true: COLORS.primary }}
+            ios_backgroundColor={COLORS.border}
           />
         </View>
 
@@ -86,6 +81,7 @@ const AccountScreen = () => {
             value={newsletterEnabled}
             onValueChange={setNewsletterEnabled}
             trackColor={{ false: COLORS.border, true: COLORS.primary }}
+            ios_backgroundColor={COLORS.border}
           />
         </View>
       </View>
@@ -97,12 +93,11 @@ const AccountScreen = () => {
             <Switch
               value={showLeaderboard}
               onValueChange={setShowLeaderboard}
-              trackColor={{ false: COLORS.border, true: "#4CD964" }}
+              trackColor={{ false: COLORS.border, true: COLORS.primary }}
+              ios_backgroundColor={COLORS.border}
             />
           </View>
-          <Text style={styles.leaderboardDescription}>
-            Show Leaderboard and share steps with your Friends.
-          </Text>
+          <Text style={styles.leaderboardDescription}>Show Leaderboard and share steps with your Friends.</Text>
         </View>
       </View>
 
@@ -112,12 +107,7 @@ const AccountScreen = () => {
 
       <View style={styles.dangerZone}>
         <Text style={styles.dangerZoneTitle}>Danger Zone</Text>
-        <MenuItem 
-          icon="alert-circle" 
-          title="Delete account" 
-          danger={true}
-          onPress={() => {}} 
-        />
+        <MenuItem icon="alert-circle" title="Delete account" danger={true} onPress={() => {}} />
       </View>
     </ScrollView>
   )
@@ -130,25 +120,29 @@ const styles = StyleSheet.create({
   },
   profileSection: {
     alignItems: "center",
-    padding: 20,
+    padding: SPACING.xl,
   },
   profileImage: {
     width: 100,
     height: 100,
     borderRadius: 50,
-    marginBottom: 12,
+    marginBottom: SPACING.md,
   },
   profileName: {
     fontSize: 24,
+    fontFamily: "System",
     fontWeight: "600",
     marginBottom: 4,
+    color: COLORS.text,
   },
   memberSince: {
     fontSize: 14,
+    fontFamily: "System",
+    fontWeight: "400",
     color: COLORS.gray,
   },
   section: {
-    marginBottom: 20,
+    marginBottom: SPACING.xl,
     borderTopWidth: 1,
     borderBottomWidth: 1,
     borderColor: COLORS.border,
@@ -157,72 +151,80 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    padding: 16,
+    padding: SPACING.lg,
     backgroundColor: COLORS.background,
   },
   dangerMenuItem: {
-    backgroundColor: 'white',
+    backgroundColor: COLORS.background,
     borderRadius: 12,
-    marginHorizontal: 16,
+    marginHorizontal: SPACING.lg,
   },
   menuItemLeft: {
     flexDirection: "row",
     alignItems: "center",
   },
   menuItemText: {
-    marginLeft: 12,
+    marginLeft: SPACING.md,
     fontSize: 16,
+    ...FONTS.regular,
+    color: COLORS.text,
   },
   dangerText: {
-    color: '#FF3B30',
-    fontWeight: '500',
+    color: COLORS.error,
+    fontFamily: FONTS.medium.fontFamily,
+    fontWeight: "500", 
   },
   toggleItem: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    padding: 16,
+    padding: SPACING.lg,
   },
   dangerZone: {
-    marginTop: 20,
+    marginTop: SPACING.xl,
     marginBottom: 32,
   },
   dangerZoneTitle: {
     fontSize: 16,
+    ...FONTS.semibold,
+    color: COLORS.text,
+    marginLeft: SPACING.lg,
+    marginBottom: SPACING.sm,
     fontWeight: "600",
-    color: "#1C1C1E",
-    marginLeft: 16,
-    marginBottom: 8,
   },
   dangerIconContainer: {
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: 'rgba(255, 59, 48, 0.1)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "rgba(255, 59, 48, 0.1)",
+    justifyContent: "center",
+    alignItems: "center",
   },
   leaderboardContainer: {
-    backgroundColor: 'white',
+    backgroundColor: COLORS.background,
     borderRadius: 12,
-    padding: 16,
-    margin: 16,
+    padding: SPACING.lg,
+    margin: SPACING.lg,
   },
   leaderboardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 8,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: SPACING.sm,
   },
   leaderboardTitle: {
     fontSize: 16,
-    fontWeight: '600',
+    ...FONTS.semibold,
     color: COLORS.text,
+    fontWeight: "600",
   },
   leaderboardDescription: {
     fontSize: 14,
     color: COLORS.gray,
+    ...FONTS.regular,
+    fontWeight: "600",
   },
 })
 
 export default AccountScreen
+

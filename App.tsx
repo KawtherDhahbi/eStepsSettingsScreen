@@ -1,20 +1,20 @@
-import React from 'react';
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Icon from 'react-native-vector-icons/Ionicons';
-import SettingsScreen from "./src/screens/SettingsScreen";
-import AccountScreen from "./src/screens/AccountScreen";
-import BodyMeasurementsScreen from "./src/screens/BodyMeasurmentsScreen";
-import { COLORS } from "./src/constants/theme";
+import { NavigationContainer } from "@react-navigation/native"
+import { createNativeStackNavigator } from "@react-navigation/native-stack"
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
+import Icon from "react-native-vector-icons/Ionicons"
+import SettingsScreen from "./src/screens/SettingsScreen"
+import AccountScreen from "./src/screens/AccountScreen"
+import BodyMeasurementsScreen from "./src/screens/BodyMeasurmentsScreen"
+import { COLORS } from "./src/constants/theme"
+import { StyleSheet } from "react-native"
 
 // Placeholder screens for Home, Tests, and Reports
-const HomeScreen = () => null;
-const TestsScreen = () => null;
-const ReportsScreen = () => null;
+const HomeScreen = () => null
+const TestsScreen = () => null
+const ReportsScreen = () => null
 
-const Stack = createNativeStackNavigator();
-const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator()
+const Tab = createBottomTabNavigator()
 
 const ProfileStack = () => (
   <Stack.Navigator
@@ -23,17 +23,19 @@ const ProfileStack = () => (
         backgroundColor: "#fff",
       },
       headerTintColor: "#000",
+      headerTitleAlign: "center", 
+      headerTitleStyle: {
+        fontFamily: "System",
+        fontSize: 17,
+        fontWeight: "700", 
+      },
     }}
   >
     <Stack.Screen name="Settings" component={SettingsScreen} />
-    <Stack.Screen name="MyAccount" component={AccountScreen} />
-    <Stack.Screen
-      name="BodyMeasurements"
-      component={BodyMeasurementsScreen}
-      options={{ title: "Body Measurements" }}
-    />
+    <Stack.Screen name="MyAccount" component={AccountScreen} options={{ title: "My Account" }} />
+    <Stack.Screen name="BodyMeasurements" component={BodyMeasurementsScreen} options={{ title: "Body Measurements" }} />
   </Stack.Navigator>
-);
+)
 
 const App = () => {
   return (
@@ -41,40 +43,31 @@ const App = () => {
       <Tab.Navigator
         screenOptions={({ route }) => ({
           tabBarIcon: ({ focused, color, size }) => {
-            let iconName;
+            let iconName
 
             switch (route.name) {
-              case 'Home':
-                iconName = focused ? 'home' : 'home-outline';
-                break;
-              case 'Tests':
-                iconName = focused ? 'person' : 'person-outline';
-                break;
-              case 'Reports':
-                iconName = focused ? 'stats-chart' : 'stats-chart-outline';
-                break;
-              case 'Settings':
-                iconName = focused ? 'person-circle' : 'person-circle-outline';
-                break;
+              case "Home":
+                iconName = "home-outline"
+                break
+              case "Tests":
+                iconName = "clipboard-outline"
+                break
+              case "Reports":
+                iconName = "pulse-outline"
+                break
+              case "Settings":
+                iconName = "person-outline"
+                break
               default:
-                iconName = 'help-outline';
+                iconName = "help-outline"
             }
 
-            return <Icon name={iconName} size={24} color={color} />;
+            return <Icon name={iconName} size={24} color={color} />
           },
           tabBarActiveTintColor: COLORS.primary,
           tabBarInactiveTintColor: COLORS.gray,
-          tabBarStyle: {
-            height: 60,
-            paddingBottom: 8,
-            paddingTop: 8,
-            backgroundColor: 'white',
-            borderTopWidth: 1,
-            borderTopColor: COLORS.border,
-          },
-          tabBarLabelStyle: {
-            fontSize: 12,
-          },
+          tabBarStyle: styles.tabBar,
+          tabBarLabelStyle: styles.tabBarLabel,
           headerShown: false,
         })}
       >
@@ -84,7 +77,24 @@ const App = () => {
         <Tab.Screen name="Settings" component={ProfileStack} />
       </Tab.Navigator>
     </NavigationContainer>
-  );
-};
+  )
+}
 
-export default App;
+const styles = StyleSheet.create({
+  tabBar: {
+    height: 60,
+    paddingBottom: 8,
+    paddingTop: 8,
+    backgroundColor: "white",
+    borderTopWidth: 1,
+    borderTopColor: COLORS.border,
+  },
+  tabBarLabel: {
+    fontSize: 12,
+    fontFamily: "System",
+    fontWeight: "400",
+  },
+})
+
+export default App
+
