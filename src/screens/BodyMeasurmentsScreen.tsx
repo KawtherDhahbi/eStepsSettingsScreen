@@ -1,14 +1,30 @@
 "use client"
 
 import { useState } from "react"
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform } from "react-native"
-import { COLORS } from "../constants/theme"
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+  Keyboard,
+} from "react-native"
+import { COLORS, SPACING } from "../constants/theme"
+import type { ProfileStackNavigationProp } from "../types/navigation"
 
-const BodyMeasurementsScreen = () => {
+interface BodyMeasurementsScreenProps {
+  navigation: ProfileStackNavigationProp
+}
+
+const BodyMeasurementsScreen = ({ navigation }: BodyMeasurementsScreenProps) => {
   const [height, setHeight] = useState("181")
   const [weight, setWeight] = useState("82")
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false)
 
   const handleUpdate = () => {
+    Keyboard.dismiss()
     // Implement update logic here
     console.log("Updated:", { height, weight })
   }
@@ -25,6 +41,8 @@ const BodyMeasurementsScreen = () => {
               onChangeText={setHeight}
               keyboardType="numeric"
               maxLength={3}
+              onFocus={() => setKeyboardVisible(true)}
+              onBlur={() => setKeyboardVisible(false)}
             />
             <Text style={styles.unit}>cm</Text>
           </View>
@@ -39,12 +57,17 @@ const BodyMeasurementsScreen = () => {
               onChangeText={setWeight}
               keyboardType="numeric"
               maxLength={3}
+              onFocus={() => setKeyboardVisible(true)}
+              onBlur={() => setKeyboardVisible(false)}
             />
             <Text style={styles.unit}>kg</Text>
           </View>
         </View>
 
-        <TouchableOpacity style={styles.updateButton} onPress={handleUpdate}>
+        <TouchableOpacity
+          style={[styles.updateButton, isKeyboardVisible && styles.updateButtonWithKeyboard]}
+          onPress={handleUpdate}
+        >
           <Text style={styles.updateButtonText}>Update</Text>
         </TouchableOpacity>
       </View>
@@ -58,14 +81,16 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.background,
   },
   content: {
-    padding: 16,
+    padding: SPACING.lg,
   },
   inputGroup: {
-    marginBottom: 20,
+    marginBottom: SPACING.xl,
   },
   label: {
     fontSize: 16,
-    marginBottom: 8,
+    fontFamily: "System",
+    fontWeight: "400",
+    marginBottom: SPACING.sm,
     color: COLORS.text,
   },
   inputContainer: {
@@ -74,29 +99,40 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: COLORS.border,
     borderRadius: 8,
-    paddingHorizontal: 12,
+    paddingHorizontal: SPACING.md,
   },
   input: {
     flex: 1,
     height: 48,
     fontSize: 16,
+    fontFamily: "System",
+    fontWeight: "400",
     color: COLORS.text,
   },
   unit: {
     fontSize: 16,
+    fontFamily: "System",
+    fontWeight: "400",
     color: COLORS.gray,
-    marginLeft: 8,
+    marginLeft: SPACING.sm,
   },
   updateButton: {
     backgroundColor: COLORS.primary,
-    padding: 16,
+    padding: SPACING.lg,
     borderRadius: 8,
     alignItems: "center",
-    marginTop: 20,
+    marginTop: SPACING.xl,
+  },
+  updateButtonWithKeyboard: {
+    position: "absolute",
+    bottom: SPACING.lg,
+    left: SPACING.lg,
+    right: SPACING.lg,
   },
   updateButtonText: {
     color: COLORS.background,
     fontSize: 16,
+    fontFamily: "System",
     fontWeight: "600",
   },
 })

@@ -1,80 +1,62 @@
-import React, { useState } from 'react';
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  Image,
-  SafeAreaView,
-} from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
-import { COLORS } from "../constants/theme";
-import { NavigationProp } from '@react-navigation/native';
+"use client"
+
+import { useState } from "react"
+import { ScrollView, StyleSheet, Text, View, TouchableOpacity, Image, SafeAreaView } from "react-native"
+import Icon from "react-native-vector-icons/Ionicons"
+import { COLORS, FONTS, SPACING } from "../constants/theme"
+import type { ProfileStackNavigationProp } from "../types/navigation"
 
 interface SettingsScreenProps {
-  navigation: NavigationProp<any>;
+  navigation: ProfileStackNavigationProp
 }
 
-// Section Header Component
 function SectionHeader({ title }: { title: string }) {
-  return (
-    <Text style={styles.sectionHeader}>{title}</Text>
-  );
+  return <Text style={styles.sectionHeader}>{title}</Text>
 }
 
-// List Item Component
-function ListItem({ 
-  title, 
+function ListItem({
+  title,
   description,
-  onPress, 
+  onPress,
   icon,
   image,
-  showChevron = true 
-}: { 
-  title: string;
-  description?: string;
-  onPress: () => void;
-  icon?: string;
-  image?: string;
-  showChevron?: boolean;
+  showChevron = true,
+}: {
+  title: string
+  description?: string
+  onPress: () => void
+  icon?: string
+  image?: string
+  showChevron?: boolean
 }) {
   return (
     <TouchableOpacity style={styles.listItem} onPress={onPress}>
       {image ? (
-        <Image 
-          source={{ uri: image }} 
-          style={styles.badgeImage}
-        />
+        <Image source={{ uri: image }} style={styles.badgeImage} />
       ) : icon ? (
         <View style={styles.iconContainer}>
-          <Icon name={icon} size={24} color="#666" />
+          <Icon name={icon} size={24} color={COLORS.gray} />
         </View>
       ) : null}
       <View style={styles.textContainer}>
         <Text style={styles.listItemTitle}>{title}</Text>
-        {description && (
-          <Text style={styles.listItemDescription}>{description}</Text>
-        )}
+        {description && <Text style={styles.listItemDescription}>{description}</Text>}
       </View>
-      {showChevron && (
-        <Icon name="chevron-forward" size={24} color="#666" />
-      )}
+      {showChevron && <Icon name="chevron-forward" size={20} color={COLORS.gray} />}
     </TouchableOpacity>
-  );
+  )
 }
 
-// Segmented Control Component
 function SegmentedControl({
   options,
   value,
   onChange,
-  label
+  label,
 }: {
-  options: string[];
-  value: string;
-  onChange: (value: string) => void;
-  label: string;
+  options: string[]
+  value: string
+  onChange: (value: string) => void
+  label: string
 }) {
   return (
     <View style={styles.segmentedControlContainer}>
@@ -83,34 +65,25 @@ function SegmentedControl({
         {options.map((option) => (
           <TouchableOpacity
             key={option}
-            style={[
-              styles.segmentedControlOption,
-              value === option && styles.segmentedControlOptionSelected,
-            ]}
+            style={[styles.segmentedControlOption, value === option && styles.segmentedControlOptionSelected]}
             onPress={() => onChange(option)}
           >
-            <Text
-              style={[
-                styles.segmentedControlText,
-                value === option && styles.segmentedControlTextSelected,
-              ]}
-            >
+            <Text style={[styles.segmentedControlText, value === option && styles.segmentedControlTextSelected]}>
               {option}
             </Text>
           </TouchableOpacity>
         ))}
       </View>
     </View>
-  );
+  )
 }
 
 const SettingsScreen = ({ navigation }: SettingsScreenProps) => {
-  const [selectedUnit, setSelectedUnit] = useState('Metric');
+  const [selectedUnit, setSelectedUnit] = useState("Metric")
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.scrollView}>
-        {/* Achievements Section */}
+      <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
         <SectionHeader title="Achievements" />
         <View style={styles.card}>
           <ListItem
@@ -121,90 +94,50 @@ const SettingsScreen = ({ navigation }: SettingsScreenProps) => {
           />
         </View>
 
-        {/* Account Section */}
         <SectionHeader title="Account" />
         <View style={styles.card}>
-          <ListItem
-            title="My Account"
-            onPress={() => navigation.navigate("MyAccount")}
-          />
+          <ListItem title="My Account" onPress={() => navigation.navigate("MyAccount")} />
         </View>
 
-        {/* General Section */}
         <SectionHeader title="General" />
         <View style={styles.card}>
-          <ListItem
-            title="Body Measurements"
-            onPress={() => navigation.navigate("BodyMeasurements")}
-          />
+          <ListItem title="Body Measurements" onPress={() => navigation.navigate("BodyMeasurements")} />
           <View style={styles.separator} />
           <SegmentedControl
             label="Units"
-            options={['Metric', 'Imperial']}
+            options={["Metric", "Imperial"]}
             value={selectedUnit}
             onChange={setSelectedUnit}
           />
         </View>
 
-        {/* Add-ons Section */}
         <SectionHeader title="Add-ons" />
         <View style={styles.card}>
-          <ListItem
-            title="Connected Apps"
-            onPress={() => {}}
-          />
+          <ListItem title="Connected Apps" onPress={() => {}} />
           <View style={styles.separator} />
-          <ListItem
-            title="My medical Files"
-            onPress={() => {}}
-          />
+          <ListItem title="My medical Files" onPress={() => {}} />
         </View>
 
-        {/* Referral Program Section */}
         <SectionHeader title="Referral Program" />
         <View style={styles.card}>
-          <ListItem
-            title="Refer your Friends & Earn 10$"
-            onPress={() => {}}
-          />
+          <ListItem title="Refer your Friends & Earn 10$" onPress={() => {}} />
         </View>
 
-        {/* About Section */}
         <SectionHeader title="About" />
         <View style={styles.card}>
-          <ListItem
-            title="About eSteps"
-            onPress={() => {}}
-            icon="heart-outline"
-          />
+          <ListItem title="About eSteps" onPress={() => {}} icon="heart-outline" />
           <View style={styles.separator} />
-          <ListItem
-            title="Join our community"
-            onPress={() => {}}
-            icon="people-outline"
-          />
+          <ListItem title="Join our community" onPress={() => {}} icon="people-outline" />
           <View style={styles.separator} />
-          <ListItem
-            title="Terms and conditions"
-            onPress={() => {}}
-            icon="document-text-outline"
-          />
+          <ListItem title="Terms and conditions" onPress={() => {}} icon="document-text-outline" />
           <View style={styles.separator} />
-          <ListItem
-            title="Support"
-            onPress={() => {}}
-            icon="help-circle-outline"
-          />
+          <ListItem title="Support" onPress={() => {}} icon="help-circle-outline" />
           <View style={styles.separator} />
-          <ListItem
-            title="Rate us"
-            onPress={() => {}}
-            icon="star-outline"
-          />
+          <ListItem title="Rate us" onPress={() => {}} icon="star-outline" />
         </View>
       </ScrollView>
     </SafeAreaView>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -214,91 +147,92 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
-    paddingBottom: 80, // Add padding to account for the tab bar
+  },
+  contentContainer: {
+    paddingBottom: 80,
   },
   sectionHeader: {
     fontSize: 16,
-    fontWeight: '600',
+    fontFamily: "System",
+    fontWeight: "600",
     color: COLORS.gray,
-    marginHorizontal: 16,
-    marginTop: 24,
-    marginBottom: 8,
+    marginHorizontal: SPACING.lg,
+    marginTop: SPACING.xl,
+    marginBottom: SPACING.sm,
   },
   card: {
-    backgroundColor: 'white',
+    backgroundColor: COLORS.background,
     borderRadius: 12,
-    marginHorizontal: 16,
-    padding: 4,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    marginHorizontal: SPACING.lg,
+    padding: SPACING.xs,
+    borderWidth: 1,
+    borderColor: COLORS.border,
   },
   listItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 16,
+    flexDirection: "row",
+    alignItems: "center",
+    padding: SPACING.lg,
   },
   textContainer: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   listItemTitle: {
     fontSize: 16,
-    fontWeight: '700',
+    fontFamily: "System",
+    fontWeight: "600",
     color: COLORS.text,
     marginBottom: 4,
   },
   listItemDescription: {
     fontSize: 14,
+    fontFamily: "System",
+    fontWeight: "400",
     color: COLORS.gray,
-    fontWeight: '400',
   },
   iconContainer: {
     width: 32,
     height: 32,
     borderRadius: 16,
     backgroundColor: COLORS.lightGray,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 12,
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: SPACING.md,
   },
   badgeImage: {
-    width: 48,
-    height: 48,
-    marginRight: 12,
+    width: 80,
+    height: 80,
+    marginRight: SPACING.md,
+    resizeMode: "contain",
   },
   separator: {
     height: 1,
     backgroundColor: COLORS.border,
-    marginHorizontal: 16,
+    marginHorizontal: SPACING.lg,
   },
   segmentedControlContainer: {
-    padding: 16,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    padding: SPACING.lg,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   segmentedControlLabel: {
     fontSize: 16,
     color: COLORS.text,
+    ...FONTS.regular,
   },
   segmentedControl: {
-    flexDirection: 'row',
-    gap: 8,
+    flexDirection: "row",
+    gap: SPACING.sm,
   },
   segmentedControlOption: {
     paddingVertical: 6,
-    paddingHorizontal: 12,
+    paddingHorizontal: SPACING.md,
     borderRadius: 16,
     borderWidth: 1,
     borderColor: COLORS.border,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   segmentedControlOptionSelected: {
     backgroundColor: COLORS.primary,
@@ -307,10 +241,12 @@ const styles = StyleSheet.create({
   segmentedControlText: {
     fontSize: 14,
     color: COLORS.gray,
+    ...FONTS.regular,
   },
   segmentedControlTextSelected: {
-    color: 'white',
+    color: COLORS.background,
   },
-});
+})
 
-export default SettingsScreen;
+export default SettingsScreen
+
